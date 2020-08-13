@@ -1,0 +1,41 @@
+{
+  "name": "signup-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon src/server.js",
+    "test": "env-cmd -f ./config/test.env jest --watch --runInBand --detectOpenHandles"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supercharge/strings": "^1.11.0",
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "express": "^4.17.1",
+    "helmet": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.3.0",
+    "mailtrap": "^2.0.2",
+    "mongoose": "^5.9.28",
+    "nodemailer": "^6.4.11",
+    "password-validator": "^5.1.0",
+    "phone": "^2.4.14",
+    "speakeasy": "^2.0.0",
+    "validate-phone-number-node-js": "0.0.1",
+    "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "jest": "^26.3.0",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
+  }
+}
