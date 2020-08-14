@@ -3,6 +3,10 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const Speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
+const log4js  = require('log4js')
+
+var logger = log4js.getLogger()
+logger.level = "debug"
 
 const userSchema = new mongoose.Schema({
             username: {
@@ -41,6 +45,7 @@ const userSchema = new mongoose.Schema({
                 }
             },
             isVerified: { type: Boolean, default: false },
+            total_attempts: { type: Number , default : '0'},
             mobile: {
                     type: String,
                     unique: true,
@@ -91,6 +96,7 @@ const userSchema = new mongoose.Schema({
                    },
                 UserRole: {
                     enum: ['Student', 'Industry Professional', 'Founder' , 'Recruiter' , 'Fresher']
+                    
                   },
                 Gender: {
                     type: String
@@ -163,7 +169,7 @@ userSchema.methods.generateOtp = async function() {
            secret: process.env.VERIFY_SECRET,
            encoding: "base32",
            digit: 10,
-           step:600,//10 mins
+           step:3000,//10 mins
            window:0
        })
       
@@ -172,6 +178,17 @@ userSchema.methods.generateOtp = async function() {
     await user.save()
     
     return code
+}
+
+userSchema.statics.finduser = async(email) => {
+
+    const user = await signup.findOne({ email })
+    
+    if(!user) {
+        logger.error('user  not  found')
+        throw new Error('unable to find user')
+    }
+    return user
 }
 
 const signup = mongoose.model('signup', userSchema)

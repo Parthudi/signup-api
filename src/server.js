@@ -9,5 +9,5 @@ const port = process.env.PORT
 
 //starting up the server
 app.listen(port , () => {
-    logger.debug("Server is running on port :" +port)
+    logger.debug("CORS-enabled web server  is running on port :" +port)
 })

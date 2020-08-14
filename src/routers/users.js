@@ -38,12 +38,14 @@ router.post('/user/signup',  async(req, res) => {
                 to: me.email,
                 subject: 'Account Verification Token',
                 html: '<h2> welcome mr/mrs ' +me.username+ ' to our app let us know if u have any query regarding our application  </h2><br>' + 
-                       '<a href=' +url+ '>' +url+'</a>' + '<h2> OTP: ' +generatestr+ ' otp only valid for 10 minutes</h2> ' 
+                       '<a href=' +url+ '>' +url+'</a>' + '<h2> OTP: ' +generatestr+ ' ,this otp you need to provide by clicking on the above link, Remember otp is only valid for 10 minutes</h2> ' 
               }
-        await transport.sendMail(mailOptions)
-          
+         await transport.sendMail(mailOptions)
+         logger.debug('mail sent to your email'
+         )
+         logger.debug('user sucessfully signedin! ')
          res.status(200).send({me , token });
-       logger.debug('user sucessfully signedin! ')
+       
      
       } catch(error) {
         logger.error('user enable to signup')
@@ -54,27 +56,39 @@ router.post('/user/signup',  async(req, res) => {
 router.post('/confirmation' , async(req, res) => {
   
     try {
-            const code = req.body.token
+      
+             const code = req.body.token
              
                 const vefy = Speakeasy.time.verify({
                         secret: process.env.VERIFY_SECRET,
                         encoding: 'base32',
                         token: code,
-                        step:600,//10 mins
+                        step:3000,//10 mins
                         window:0
                     })
                 logger.debug('You have entered ' +vefy+ ' OTP')
                 
           if(!vefy) {
-            logger.error('Wrong OTP')
-                }
-          
+             logger.error('Wrong OTP')
+             throw new Error('invalid OTP')
+          } 
+
           if(vefy) {
               logger.debug('Email Verified !!! ')
-                }
-            
-        res.status(200).send('verification' +vefy)
-    
+               logger.debug('email entered by user : ' +req.body.email)
+
+               const user = await signup.finduser(req.body.email)
+               if(user) {
+                 logger.debug('user found')
+                  user.isVerified = true
+                  }   
+                  
+          user.total_attempts +=1
+           user.timestamps = true
+
+            await user.save()
+            res.status(200).send({user})
+      }
   }
      catch(e) {
        logger.error('User confirmation failed')

@@ -10,6 +10,10 @@ const app = express()
 app.use(express.json())
 app.use(useRouter)
 app.use(helmet())
+
+//setting up the cors
 app.use(cors())
 
 module.exports = app
+
+ 
