@@ -8,8 +8,8 @@ beforeEach( async() => {
 
 test('Should signin a new user' , async() => {
      await request(app).post('/user/signup').send({
-        email: "parth.170410116046@gmail.com",
-        password: "pasTHUdi00999",
-        UserRole: ' Student '
+      email: "parth.170410116046@gmail.com",
+      password: "PaassPAA1234",
+      UserRole: " Founder "
         }).expect(201)     
 })

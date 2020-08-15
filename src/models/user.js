@@ -5,6 +5,7 @@ const Speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
 const log4js  = require('log4js')
 
+
 var logger = log4js.getLogger()
 logger.level = "debug"
 
@@ -186,6 +187,7 @@ userSchema.statics.finduser = async(email) => {
     
     if(!user) {
         logger.error('user  not  found')
+        myUndefinedFunction()
         throw new Error('unable to find user')
     }
     return user

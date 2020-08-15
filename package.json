@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sentry/node": "^5.20.1",
     "@supercharge/strings": "^1.11.0",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",

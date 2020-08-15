@@ -1,4 +1,3 @@
-# NodeJS Signup Api  sample
 
 This is a NodeJS API that supports username and password & user User Role authentication with JWTs & secret otp and has APIs that return Chuck Norris phrases. How awesome is that?
 

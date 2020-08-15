@@ -5,9 +5,15 @@ const signup = require('../models/user')
 const nodemailer = require('nodemailer')
 const auth = require('../middleware/auth')
 const Speakeasy = require('speakeasy')
+const Sentry = require('@sentry/node')
 
 const logger = log4js.getLogger()
 logger.level = "debug"
+
+
+router.get('/debug-sentry', function mainHandler(req, res) {
+  throw new Error('My first Sentry error!');
+})
 
 //signup route 
 router.post('/user/signup',  async(req, res) => {
