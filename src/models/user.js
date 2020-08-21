@@ -59,45 +59,81 @@ const userSchema = new mongoose.Schema({
                      
                     }} ,        
                password: {
-                   type: String,
-                   unique: true,
-                   required: true,
-                   validate(value) {
-                   var rex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,32})");
+                    type: String,
+                    unique: true,
+                    required: true,
+                    validate(value) {
+                    var rex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,32})");
                     
-               if(!rex.test(value)) {
-                    throw new Error('password Weak')
-                      }
-                    }
-               },
+                  if(!rex.test(value)) {
+                        throw new Error('password Weak')
+                            }
+                        }
+                     },
+               confirmPassword: {
+                        type: String,
+                        required: true,
+                     },  
                location: {
-                   Street_Address1: {
+                    Street_Address1: {
                             type: String,
                         },
-                   Street_Address2: {
+                    Street_Address2: {
                         type: String
                       },
-                   Current_city: {
+                    Current_city: {
                        type: String,
                         },
-                   Home_Town: {
+                    Home_Town: {
                        type: String
-                    },
-                   State: {
+                      },
+                    State: {
                       type: String
-                      },
-                   Country: {
+                       },
+                    Country: {
                        type: String
-                      },
-                   Pincode: {
+                       },
+                    Pincode: {
                         type: Number,
                         minlength: 6,
                         maxlength: 6
-                      }
-                   },
-                UserRole: {
-                    enum: ['Student', 'Industry Professional', 'Founder' , 'Recruiter' , 'Fresher']
-                    
+                       }
+                     },
+           Relevance: {
+                    type: String,
+                    required: true,
+                    enum : [
+                        "JOB_PORTAL", "IMS" , "NEWS_PORTAL"
+                          ],
+                        default : 'NEWS_PORTAL'
+                      },
+            UTM: {
+                UTM_Parameters : [{
+                    utm_source : { 
+                        type: String,
+                        required: true,
+                        default : 'facebook'} ,
+                    utm_medium: {
+                        type: String,
+                        required: true,
+                        default : 'email'} ,
+                    utm_campaign: {
+                        type: String,
+                        required: true,
+                        default : 'book-launch-2014-may-7'},
+                    utm_term: {
+                        type: String,
+                        default : 'non-profit-theme'},
+                    utm_content: {
+                        type: String,
+                        default: 'cta-sidebar'}
+                         }],
+                    },
+               userRole: {
+                    type: String,
+                    required: true,
+                    enum: ['STUDENT', 'INDUSTRY PROFESSIONAL', 'FOUNDER' , 'RECUITER' , 'FRESHER'],
+                    default: 'FOUNDER'
                   },
                 Gender: {
                     type: String
@@ -127,9 +163,8 @@ const userSchema = new mongoose.Schema({
                   }],
                   
                 }, {
-
-                    timestamps: true
-         })
+                        timestamps : true
+                    })
 
  
 userSchema.pre('save', async function(next)  {
@@ -150,6 +185,7 @@ userSchema.methods.toJSON = function() {
     delete userObject.password
     delete userObject.otp
     delete userObject.email
+    delete userObject.confirmPassword
     
     return userObject
 }
@@ -169,7 +205,6 @@ userSchema.methods.generateOtp = async function() {
      const code= Speakeasy.time({
            secret: process.env.VERIFY_SECRET,
            encoding: "base32",
-           digit: 10,
            step:3000,//10 mins
            window:0
        })
@@ -179,6 +214,24 @@ userSchema.methods.generateOtp = async function() {
     await user.save()
     
     return code
+}
+
+ 
+//while login the user needs to provide email & password of a valid user who had signup.
+userSchema.statics.findByCredential = async(email, password) => {
+    
+    const user = await signup.findOne({ email })
+
+    if(!user) {
+        throw new Error('unable to find user')
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if(!isMatch) {
+        throw new Error('login failed!!!!')
+    }
+     return user
 }
 
 userSchema.statics.finduser = async(email) => {
@@ -192,6 +245,7 @@ userSchema.statics.finduser = async(email) => {
     }
     return user
 }
+
 
 const signup = mongoose.model('signup', userSchema)
 module.exports = signup
