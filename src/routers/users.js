@@ -12,6 +12,7 @@ logger.level = "debug"
 //signup route 
 router.post('/user/signup',  async(req, res) => {
       try {
+        logger.debug('Entered signup')
         const me = new signup(req.body) 
         
         await me.save()
@@ -23,7 +24,6 @@ router.post('/user/signup',  async(req, res) => {
           logger.debug(' token generated')
   
           const generatestr = await me.generateOtp()
-          logger.debug(' string generated : ' +generatestr)
   
         var transport = nodemailer.createTransport({
           host: "smtp.mailtrap.io",
@@ -43,8 +43,8 @@ router.post('/user/signup',  async(req, res) => {
                          '<a href=' +url+ '>' +url+'</a>' + '<h2> OTP: ' +generatestr+ ' ,this otp you need to provide by clicking on the above link, Remember otp is only valid for 10 minutes</h2> ' 
                 }
            await transport.sendMail(mailOptions)           
-           logger.debug('mail sent to your email'         
-           )                                                               
+           logger.debug('mail sent to your email')    
+                                                                      
            logger.debug('user sucessfully signedin! ')
            res.status(201).send({me , token });
         }
