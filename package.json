@@ -17,6 +17,7 @@
   "dependencies": {
     "@sentry/node": "^5.20.1",
     "@supercharge/strings": "^1.11.0",
+    "babel-plugin-prismjs": "^2.0.1",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
@@ -29,6 +30,7 @@
     "nodemailer": "^6.4.11",
     "password-validator": "^5.1.0",
     "phone": "^2.4.14",
+    "prismjs": "^1.21.0",
     "speakeasy": "^2.0.0",
     "validate-phone-number-node-js": "0.0.1",
     "validator": "^13.1.1"
